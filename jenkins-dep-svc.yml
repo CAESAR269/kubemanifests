@@ -1,0 +1,38 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jenkins-dep
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: dev
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      name: jenkins-dep
+      labels:
+        app: dev
+    spec:
+      containers:
+        - name: jenkins
+          image: jenkins/jenkins
+          ports:
+            - containerPort: 8080
+              name: http-web
+
+---
+apiVersion: v1
+kind: Service
+metadata: 
+  name: jenkins-svc
+spec:
+  type: LoadBalancer
+  selector:
+     app: dev
+  ports:
+    - name: http-web
+      port: 35000
+      targetPort: 8080    

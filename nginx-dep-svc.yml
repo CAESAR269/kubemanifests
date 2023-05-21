@@ -1,0 +1,39 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-dep
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: dev
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      name: nginx-dep
+      labels:
+        app: dev
+    spec:
+      containers:
+        - name: nginx
+          image: nginx:latest
+          ports:
+            - containerPort: 80
+              name: http-web-port
+
+
+---
+apiVersion: v1
+kind: Service
+metadata: 
+  name: nginx-svc
+spec:
+  type: LoadBalancer
+  selector:
+     app: dev
+  ports:
+    - name: http-web-port
+      port: 35000
+      targetPort: 80    
